@@ -1,5 +1,7 @@
 import urequests
 import jpegdec
+from pimoroni_i2c import PimoroniI2C
+from pcf85063a import PCF85063A, MONDAY
 
 from badger2040w import WIDTH, Badger2040W, UPDATE_NORMAL
 
@@ -11,6 +13,8 @@ display = Badger2040W()
 display.led(128)
 display.set_update_speed(UPDATE_NORMAL)
 jpeg = jpegdec.JPEG(display.display)
+i2c = PimoroniI2C(sda=4, scl=5)
+rtc = PCF85063A(i2c)
 
 BLACK = 0
 WHITE = 15
@@ -163,6 +167,7 @@ plant = HAPlant()
 plant.fetch_states()
 plant.display_state()
 
+rtc.set_timer(secrets.REFRESH_INTERVAL_SECONDS)
 # Call halt in a loop, on battery this switches off power.
 # On USB, the app will exit when A+C is pressed because the launcher picks that up.
 while True:
