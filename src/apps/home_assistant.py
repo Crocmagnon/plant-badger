@@ -1,5 +1,7 @@
-from badger2040w import WIDTH, Badger2040W
 import urequests
+import jpegdec
+
+from badger2040w import WIDTH, Badger2040W, UPDATE_NORMAL
 
 import secrets
 from secrets import HA_BASE_URL, HA_ACCESS_TOKEN
@@ -7,14 +9,19 @@ from secrets import HA_BASE_URL, HA_ACCESS_TOKEN
 
 display = Badger2040W()
 display.led(128)
-display.set_update_speed(2)
+display.set_update_speed(UPDATE_NORMAL)
+jpeg = jpegdec.JPEG(display.display)
+
 BLACK = 0
 WHITE = 15
+IMAGE_WIDTH = 104
 
+display.set_pen(BLACK)
+display.clear()
 display.connect()
 
-LINE_START_OFFSET = 3
-STATUS_VALUE_OFFSET = 25
+LINE_START_OFFSET = IMAGE_WIDTH + 3
+STATUS_VALUE_OFFSET = IMAGE_WIDTH + 25
 
 
 class HAError(Exception):
@@ -123,6 +130,10 @@ class HAPlant:
         # Clear the display
         display.set_pen(WHITE)
         display.clear()
+
+        # Display image
+        jpeg.open_file("/images/plant.jpg")
+        jpeg.decode(0, 0)
 
         # Draw the page header
         display.set_pen(BLACK)
