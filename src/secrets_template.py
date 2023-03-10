@@ -12,5 +12,5 @@ HA_PLANT_MOISTURE_SENSOR = "sensor.plant_name_moisture"
 HA_PLANT_TEMPERATURE_SENSOR = "sensor.plant_name_temperature"
 HA_PLANT_CONDUCTIVITY_SENSOR = "sensor.plant_name_conductivity"
 HA_PLANT_ILLUMINANCE_SENSOR = "sensor.plant_name_illuminance"
-# Max 255
-REFRESH_INTERVAL_MINUTES = 60
+
+REFRESH_INTERVAL_MINUTES = 60  # Max 255
