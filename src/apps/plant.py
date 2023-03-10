@@ -1,9 +1,11 @@
+import machine
 import urequests
 import jpegdec
 from pimoroni_i2c import PimoroniI2C
 from pcf85063a import PCF85063A, MONDAY
+import ntptime
 
-from badger2040w import WIDTH, Badger2040W, UPDATE_NORMAL
+from badger2040w import WIDTH, Badger2040W, UPDATE_NORMAL, UPDATE_FAST
 
 import secrets
 from secrets import HA_BASE_URL, HA_ACCESS_TOKEN
@@ -11,8 +13,9 @@ from secrets import HA_BASE_URL, HA_ACCESS_TOKEN
 
 display = Badger2040W()
 display.led(128)
-display.set_update_speed(UPDATE_NORMAL)
+
 jpeg = jpegdec.JPEG(display.display)
+
 i2c = PimoroniI2C(sda=4, scl=5)
 rtc = PCF85063A(i2c)
 
@@ -20,11 +23,7 @@ BLACK = 0
 WHITE = 15
 IMAGE_WIDTH = 104
 
-display.set_pen(BLACK)
-display.clear()
-display.connect()
-
-LINE_START_OFFSET = IMAGE_WIDTH + 3
+LINE_START_OFFSET = IMAGE_WIDTH + 8
 STATUS_VALUE_OFFSET = IMAGE_WIDTH + 25
 
 
@@ -56,7 +55,6 @@ def fetch_state(entity: str) -> dict:
 
 class HAPlant:
     def __init__(self):
-        self._last_fetched = None
         self.plant_state = None
         # Example state
         # {
@@ -131,23 +129,10 @@ class HAPlant:
         print(self.details)
 
     def display_state(self):
-        # Clear the display
-        display.set_pen(WHITE)
-        display.clear()
-
-        # Display image
-        jpeg.open_file("/images/plant.jpg")
-        jpeg.decode(0, 0)
-
-        # Draw the page header
-        display.set_pen(BLACK)
-        display.rectangle(0, 0, WIDTH, 20)
-
         # Write text in header
-        display.set_font("bitmap6")
-        display.set_pen(WHITE)
-        display.text(self.get_plant_attribute("friendly_name"), 3, 4)
+        display_header(self.get_plant_attribute("friendly_name"))
 
+        # Display status
         display.set_pen(BLACK)
         display.text("H", LINE_START_OFFSET, 30)
         display.text("T", LINE_START_OFFSET, 55)
@@ -160,16 +145,73 @@ class HAPlant:
         display.text(self.get_plant_status("conductivity"), STATUS_VALUE_OFFSET, 80)
         display.text(self.get_plant_status("illuminance"), STATUS_VALUE_OFFSET, 105)
 
+        display.set_update_speed(UPDATE_NORMAL)
         display.update()
 
 
-plant = HAPlant()
-plant.fetch_states()
-plant.display_state()
+def main():
+    display.connect()
+    set_clocks()
 
-rtc.set_timer(secrets.REFRESH_INTERVAL_MINUTES, ttp=PCF85063A.TIMER_TICK_1_OVER_60HZ)
+    display.set_pen(WHITE)
+    display.clear()
+    display_image()
+    display_header("Chargement...")
+    display.set_update_speed(UPDATE_FAST)
+    display.update()
 
-# Call halt in a loop, on battery this switches off power.
-# On USB, the app will exit when A+C is pressed because the launcher picks that up.
-while True:
-    display.halt()
+    plant = HAPlant()
+    plant.fetch_states()
+    plant.display_state()
+
+    rtc.set_timer(
+        secrets.REFRESH_INTERVAL_MINUTES, ttp=PCF85063A.TIMER_TICK_1_OVER_60HZ
+    )
+
+    # Call halt in a loop, on battery this switches off power.
+    # On USB, the app will exit when A+C is pressed because the launcher picks that up.
+    while True:
+        display.halt()
+
+
+def set_clocks():
+    ntptime.settime()
+    (
+        year,
+        month,
+        day,
+        weekday,
+        hours,
+        minutes,
+        seconds,
+        _,
+    ) = machine.RTC().datetime()
+    rtc.datetime((year, month, day, hours, minutes, seconds, weekday))
+
+
+def display_image():
+    # Display image
+    display.clear()
+    jpeg.open_file("/images/plant.jpg")
+    jpeg.decode(0, 0)
+
+
+def display_header(text):
+    # Draw the page header
+    display.set_pen(BLACK)
+    display.rectangle(0, 0, WIDTH, 20)
+
+    # Write text in header
+    display.set_font("bitmap6")
+    display.set_pen(WHITE)
+    display.text(text, 3, 4)
+
+    # Display time
+    _, _, _, hour, minute, _, _ = rtc.datetime()
+    hour = (hour + 1) % 24
+    time = f"{hour:02d}:{minute:02d}"
+    time_offset = display.measure_text(time)
+    display.text(time, WIDTH - time_offset - 3, 4)
+
+
+main()
