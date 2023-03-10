@@ -11,9 +11,9 @@ FONT_SIZE = 2
 
 changed = False
 exited_to_launcher = False
-woken_by_button = (
-    badger2040.woken_by_button()
-)  # Must be done before we clear_pressed_to_wake
+
+# Must be done before we clear_pressed_to_wake
+woken_by_button = badger2040.woken_by_button()
 
 if badger2040.pressed_to_wake(badger2040.BUTTON_A) and badger2040.pressed_to_wake(
     badger2040.BUTTON_C
