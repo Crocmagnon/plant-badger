@@ -1,3 +1,7 @@
+# Plant Badger
+Application for Pimoroni Badger 2040 W. Connects to Home Assistant to fetch
+a plant's status and displays it on the Badger.
+
 ## Install dependencies
 
 If you only manage this project from a shell, then you only need these dependencies.
