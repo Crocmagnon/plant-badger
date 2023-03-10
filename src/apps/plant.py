@@ -167,7 +167,8 @@ plant = HAPlant()
 plant.fetch_states()
 plant.display_state()
 
-rtc.set_timer(secrets.REFRESH_INTERVAL_SECONDS)
+rtc.set_timer(secrets.REFRESH_INTERVAL_MINUTES, ttp=PCF85063A.TIMER_TICK_1_OVER_60HZ)
+
 # Call halt in a loop, on battery this switches off power.
 # On USB, the app will exit when A+C is pressed because the launcher picks that up.
 while True:
