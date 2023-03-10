@@ -132,8 +132,7 @@ def launch(file):
 
     except ImportError as e:
         # If the app doesn't exist, notify the user
-        warning(None, f"Could not launch: {file}")
-        print(e)
+        warning(None, f"Could not launch: {file}. {e}")
         time.sleep(4.0)
     except Exception as e:
         # If the app throws an error, catch it and display!
