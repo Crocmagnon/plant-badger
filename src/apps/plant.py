@@ -1,11 +1,8 @@
-import machine
 import urequests
 import jpegdec
-from pimoroni_i2c import PimoroniI2C
-from pcf85063a import PCF85063A, MONDAY
-import ntptime
+from pcf85063a import PCF85063A
 
-from badger2040w import WIDTH, Badger2040W, UPDATE_NORMAL, UPDATE_FAST
+from badger2040w import WIDTH, Badger2040W, UPDATE_NORMAL, UPDATE_FAST, ENABLE_3V3
 
 import secrets
 from secrets import HA_BASE_URL, HA_ACCESS_TOKEN
@@ -16,8 +13,6 @@ display.led(128)
 
 jpeg = jpegdec.JPEG(display.display)
 
-i2c = PimoroniI2C(sda=4, scl=5)
-rtc = PCF85063A(i2c)
 
 BLACK = 0
 WHITE = 15
@@ -151,42 +146,30 @@ class HAPlant:
 
 def main():
     display.connect()
-    set_clocks()
+    display.set_clocks()
 
+    # Call halt in a loop, on battery this switches off power.
+    # On USB, the app will exit when A+C is pressed because the launcher picks that up.
+    while True:
+        fetch_and_display()
+        print("Halting")
+        display.halt()
+        display.rtc.clear_timer_flag()
+
+
+def fetch_and_display():
     display.set_pen(WHITE)
     display.clear()
     display_image()
     display_header("Chargement...")
     display.set_update_speed(UPDATE_FAST)
     display.update()
-
     plant = HAPlant()
     plant.fetch_states()
     plant.display_state()
-
-    rtc.set_timer(
+    display.rtc.set_timer(
         secrets.REFRESH_INTERVAL_MINUTES, ttp=PCF85063A.TIMER_TICK_1_OVER_60HZ
     )
-
-    # Call halt in a loop, on battery this switches off power.
-    # On USB, the app will exit when A+C is pressed because the launcher picks that up.
-    while True:
-        display.halt()
-
-
-def set_clocks():
-    ntptime.settime()
-    (
-        year,
-        month,
-        day,
-        weekday,
-        hours,
-        minutes,
-        seconds,
-        _,
-    ) = machine.RTC().datetime()
-    rtc.datetime((year, month, day, hours, minutes, seconds, weekday))
 
 
 def display_image():
@@ -207,7 +190,7 @@ def display_header(text):
     display.text(text, 3, 4)
 
     # Display time
-    _, _, _, hour, minute, _, _ = rtc.datetime()
+    _, _, _, hour, minute, _, _ = display.rtc.datetime()
     hour = (hour + 1) % 24
     time = f"{hour:02d}:{minute:02d}"
     time_offset = display.measure_text(time)

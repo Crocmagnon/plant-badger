@@ -1,6 +1,9 @@
 import machine
 import micropython
 from picographics import PicoGraphics, DISPLAY_INKY_PACK
+from pimoroni_i2c import PimoroniI2C
+from pcf85063a import PCF85063A
+import ntptime
 import network
 from network_manager import NetworkManager
 import WIFI_CONFIG
@@ -83,6 +86,8 @@ class Badger2040W:
         self._led.freq(1000)
         self._led.duty_u16(0)
         self._update_speed = 0
+        i2c = PimoroniI2C(sda=4, scl=5)
+        self.rtc = PCF85063A(i2c)
 
     def __getattr__(self, item):
         # Glue to redirect calls to PicoGraphics
@@ -116,7 +121,7 @@ class Badger2040W:
         time.sleep(0.05)
         enable = machine.Pin(ENABLE_3V3, machine.Pin.OUT)
         enable.off()
-        while not self.pressed_any():
+        while not self.pressed_any() and not self.rtc.read_timer_flag():
             pass
 
     def pressed(self, button):
@@ -177,3 +182,17 @@ class Badger2040W:
             network_manager.client(WIFI_CONFIG.SSID, WIFI_CONFIG.PSK)
         )
         gc.collect()
+
+    def set_clocks(self):
+        ntptime.settime()
+        (
+            year,
+            month,
+            day,
+            weekday,
+            hours,
+            minutes,
+            seconds,
+            _,
+        ) = machine.RTC().datetime()
+        self.rtc.datetime((year, month, day, hours, minutes, seconds, weekday))

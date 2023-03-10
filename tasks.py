@@ -45,30 +45,20 @@ def initial_setup(c: Context, board_id: str):
         if MICROPYTHON_DEPENDENCIES:
             deps = " ".join(MICROPYTHON_DEPENDENCIES)
             c.run(
-                f"mpremote connect id:{board_id} "
-                f"mip install {deps} + "
-                "cp -r . : + "
-                "reset",
+                f"mpremote connect id:{board_id} " f"mip install {deps}",
                 pty=True,
                 echo=True,
             )
-        else:
-            c.run(
-                f"mpremote connect id:{board_id} " "cp -r . : + " "reset",
-                pty=True,
-                echo=True,
-            )
+    update_code(c, board_id)
 
 
 @task
 def update_code(c: Context, board_id: str):
     """Update code on the board."""
-    # mpremote connect id:e6614864d3269c34 \
-    #   cp -r . : + \
-    #   reset
     with c.cd(SRC_DIR):
+        c.run("find . -name '.DS_Store' -delete", pty=True, echo=True)
         c.run(
-            f"mpremote connect id:{board_id} " "cp -r . : + " "reset",
+            f"mpremote connect id:{board_id} cp -r . : + reset",
             pty=True,
             echo=True,
         )
