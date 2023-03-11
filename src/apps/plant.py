@@ -151,10 +151,13 @@ def main():
     # Call halt in a loop, on battery this switches off power.
     # On USB, the app will exit when A+C is pressed because the launcher picks that up.
     while True:
+        display.rtc.clear_timer_flag()
         fetch_and_display()
+        display.rtc.set_timer(
+            secrets.REFRESH_INTERVAL_MINUTES, ttp=PCF85063A.TIMER_TICK_1_OVER_60HZ
+        )
         print("Halting")
         display.halt()
-        display.rtc.clear_timer_flag()
 
 
 def fetch_and_display():
@@ -164,12 +167,10 @@ def fetch_and_display():
     display_header("Chargement...")
     display.set_update_speed(UPDATE_FAST)
     display.update()
+
     plant = HAPlant()
     plant.fetch_states()
     plant.display_state()
-    display.rtc.set_timer(
-        secrets.REFRESH_INTERVAL_MINUTES, ttp=PCF85063A.TIMER_TICK_1_OVER_60HZ
-    )
 
 
 def display_image():
