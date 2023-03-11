@@ -2,7 +2,13 @@ import urequests
 import jpegdec
 from pcf85063a import PCF85063A
 
-from badger2040w import WIDTH, Badger2040W, UPDATE_NORMAL, UPDATE_FAST, ENABLE_3V3
+from badger2040w import (
+    WIDTH,
+    Badger2040W,
+    UPDATE_NORMAL,
+    UPDATE_MEDIUM,
+    UPDATE_FAST,
+)
 
 import secrets
 from secrets import HA_BASE_URL, HA_ACCESS_TOKEN
@@ -140,7 +146,7 @@ class HAPlant:
         display.text(self.get_plant_status("conductivity"), STATUS_VALUE_OFFSET, 80)
         display.text(self.get_plant_status("illuminance"), STATUS_VALUE_OFFSET, 105)
 
-        display.set_update_speed(UPDATE_NORMAL)
+        display.set_update_speed(UPDATE_MEDIUM)
         display.update()
 
 
