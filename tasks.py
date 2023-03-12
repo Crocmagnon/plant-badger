@@ -1,6 +1,7 @@
 import time
 from pathlib import Path
 
+from PIL import Image
 from invoke import task, Context
 
 BASE_DIR = Path(__file__).parent.resolve(strict=True)
@@ -39,8 +40,41 @@ def list(c: Context):
 
 
 @task
+def download_image(c: Context):
+    import requests
+    import sys
+
+    sys.path.insert(0, str(SRC_DIR))
+    from secrets import HA_ACCESS_TOKEN, HA_BASE_URL, HA_PLANT_ID
+
+    url = HA_BASE_URL + "/states/" + HA_PLANT_ID
+    headers = {"Authorization": "Bearer " + HA_ACCESS_TOKEN}
+    res = requests.get(url, headers=headers)
+    data = res.json()
+    image_url = data["attributes"]["entity_picture"]
+    image_path = SRC_DIR / "images" / "plant.jpg"
+    c.run(f"curl -o {image_path} {image_url}", pty=True, echo=True)
+
+    # resize image_path to 128x128 with Pillow
+    image = Image.open(image_path)
+    image = image.resize((128, 128))
+
+    # crop image to 104x128, centered
+    left = int((image.width - 104) / 2)
+    top = 0
+    right = left + 104
+    bottom = top + 128
+    image = image.crop((left, top, right, bottom))
+
+    # convert image to grayscale
+    image = image.convert("L")
+    image.save(image_path)
+
+
+@task(pre=[download_image])
 def initial_setup(c: Context, board_id: str):
     """Install dependencies and copy project files to the board."""
+    wipe(c, board_id)
     with c.cd(SRC_DIR):
         if MICROPYTHON_DEPENDENCIES:
             deps = " ".join(MICROPYTHON_DEPENDENCIES)

@@ -2,3 +2,5 @@ mpremote
 invoke>=2.0.0
 black
 pre-commit
+requests
+Pillow
