@@ -162,6 +162,7 @@ def main():
         display.rtc.set_timer(
             secrets.REFRESH_INTERVAL_MINUTES, ttp=PCF85063A.TIMER_TICK_1_OVER_60HZ
         )
+        display.rtc.enable_timer_interrupt(True)
         print("Halting")
         display.halt()
 
