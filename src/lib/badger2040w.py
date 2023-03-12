@@ -185,14 +185,5 @@ class Badger2040W:
 
     def set_clocks(self):
         ntptime.settime()
-        (
-            year,
-            month,
-            day,
-            weekday,
-            hours,
-            minutes,
-            seconds,
-            _,
-        ) = machine.RTC().datetime()
-        self.rtc.datetime((year, month, day, hours, minutes, seconds, weekday))
+        now = time.localtime()
+        self.rtc.datetime(now[:7])
