@@ -21,10 +21,8 @@ This will install dependencies required by PyCharm to run its MicroPython tools.
 invoke --list
 # Start by getting your board id
 inv list
-# Then wipe the board
-inv wipe <board_id>
-# Then run the initial setup
-inv initial-setup <board_id>
+# Then provision the board
+inv provision-all
 # After that, just update the code when changes are made locally
 inv update-code <board_id>
 ```

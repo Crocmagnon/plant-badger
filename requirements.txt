@@ -4,3 +4,4 @@ black
 pre-commit
 requests
 Pillow
+pyyaml

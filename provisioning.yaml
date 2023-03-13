@@ -1,0 +1,36 @@
+e6614864d336b436:
+  HA_PLANT_ID: plant.peperomia_obtusifolia
+  HA_PLANT_MOISTURE_SENSOR: sensor.peperomia_obtusifolia_soil_moisture
+  HA_PLANT_TEMPERATURE_SENSOR: sensor.peperomia_obtusifolia_temperature
+  HA_PLANT_CONDUCTIVITY_SENSOR: sensor.peperomia_obtusifolia_conductivity
+  HA_PLANT_ILLUMINANCE_SENSOR: sensor.peperomia_obtusifolia_illuminance
+e6614864d35f9934:
+  HA_PLANT_ID: plant.hedera_helix
+  HA_PLANT_MOISTURE_SENSOR: sensor.hedera_helix_soil_moisture
+  HA_PLANT_TEMPERATURE_SENSOR: sensor.hedera_helix_temperature
+  HA_PLANT_CONDUCTIVITY_SENSOR: sensor.hedera_helix_conductivity
+  HA_PLANT_ILLUMINANCE_SENSOR: sensor.hedera_helix_illuminance
+e6614864d3417f36:
+  HA_PLANT_ID: plant.calathea_makoyana
+  HA_PLANT_MOISTURE_SENSOR: sensor.calathea_makoyana_soil_moisture
+  HA_PLANT_TEMPERATURE_SENSOR: sensor.calathea_makoyana_temperature
+  HA_PLANT_CONDUCTIVITY_SENSOR: sensor.calathea_makoyana_conductivity
+  HA_PLANT_ILLUMINANCE_SENSOR: sensor.calathea_makoyana_illuminance
+ficus:
+  HA_PLANT_ID: plant.ficus
+  HA_PLANT_MOISTURE_SENSOR: sensor.ficus_soil_moisture
+  HA_PLANT_TEMPERATURE_SENSOR: sensor.ficus_temperature
+  HA_PLANT_CONDUCTIVITY_SENSOR: sensor.ficus_conductivity
+  HA_PLANT_ILLUMINANCE_SENSOR: sensor.ficus_illuminance
+aloe:
+  HA_PLANT_ID: plant.aloe_vera
+  HA_PLANT_MOISTURE_SENSOR: sensor.aloe_vera_soil_moisture
+  HA_PLANT_TEMPERATURE_SENSOR: sensor.aloe_vera_temperature
+  HA_PLANT_CONDUCTIVITY_SENSOR: sensor.aloe_vera_conductivity
+  HA_PLANT_ILLUMINANCE_SENSOR: sensor.aloe_vera_illuminance
+toupic:
+  HA_PLANT_ID: plant.senecio_himalaya
+  HA_PLANT_MOISTURE_SENSOR: sensor.senecio_himalaya_soil_moisture
+  HA_PLANT_TEMPERATURE_SENSOR: sensor.senecio_himalaya_temperature
+  HA_PLANT_CONDUCTIVITY_SENSOR: sensor.senecio_himalaya_conductivity
+  HA_PLANT_ILLUMINANCE_SENSOR: sensor.senecio_himalaya_illuminance
