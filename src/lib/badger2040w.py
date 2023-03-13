@@ -154,16 +154,8 @@ class Badger2040W:
                 row >>= 1
 
     def status_handler(self, mode, status, ip):
-        print(mode, status, ip)
-        self.display.set_pen(15)
-        self.display.clear()
-        self.display.set_pen(0)
-        if status:
-            self.display.text("Connected!", 10, 10, 300, 0.5)
-            self.display.text(ip, 10, 30, 300, 0.5)
-        else:
-            self.display.text("Connecting...", 10, 10, 300, 0.5)
-        self.update()
+        # Explicitly do not display anything when connecting to Wi-Fi.
+        pass
 
     def isconnected(self):
         return network.WLAN(network.STA_IF).isconnected()
