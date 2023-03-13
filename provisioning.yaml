@@ -16,19 +16,19 @@ e6614864d3417f36:
   HA_PLANT_TEMPERATURE_SENSOR: sensor.calathea_makoyana_temperature
   HA_PLANT_CONDUCTIVITY_SENSOR: sensor.calathea_makoyana_conductivity
   HA_PLANT_ILLUMINANCE_SENSOR: sensor.calathea_makoyana_illuminance
-ficus:
+e6614864d315a136:
   HA_PLANT_ID: plant.ficus
   HA_PLANT_MOISTURE_SENSOR: sensor.ficus_soil_moisture
   HA_PLANT_TEMPERATURE_SENSOR: sensor.ficus_temperature
   HA_PLANT_CONDUCTIVITY_SENSOR: sensor.ficus_conductivity
   HA_PLANT_ILLUMINANCE_SENSOR: sensor.ficus_illuminance
-aloe:
+e6614864d3269c34:
   HA_PLANT_ID: plant.aloe_vera
   HA_PLANT_MOISTURE_SENSOR: sensor.aloe_vera_soil_moisture
   HA_PLANT_TEMPERATURE_SENSOR: sensor.aloe_vera_temperature
   HA_PLANT_CONDUCTIVITY_SENSOR: sensor.aloe_vera_conductivity
   HA_PLANT_ILLUMINANCE_SENSOR: sensor.aloe_vera_illuminance
-toupic:
+e6614864d3938334:
   HA_PLANT_ID: plant.senecio_himalaya
   HA_PLANT_MOISTURE_SENSOR: sensor.senecio_himalaya_soil_moisture
   HA_PLANT_TEMPERATURE_SENSOR: sensor.senecio_himalaya_temperature
