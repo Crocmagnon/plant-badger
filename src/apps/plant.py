@@ -130,6 +130,11 @@ class HAPlant:
         print(self.details)
 
     def display_state(self):
+        display.set_pen(WHITE)
+        display.clear()
+
+        display_image()
+
         # Write text in header
         display_header(self.get_plant_attribute("friendly_name"))
 
