@@ -168,13 +168,6 @@ def main():
 
 
 def fetch_and_display():
-    display.set_pen(WHITE)
-    display.clear()
-    display_image()
-    display_header("Chargement...")
-    display.set_update_speed(UPDATE_FAST)
-    display.update()
-
     plant = HAPlant()
     plant.fetch_states()
     plant.display_state()
