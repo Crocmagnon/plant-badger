@@ -23,40 +23,29 @@ def list_boards(c: Context) -> None:
 
 
 @task
-def provision_all(c: Context) -> None:
+def provision_all(c: Context, *, initial: bool = True) -> None:
     """Provision all connected boards sequentially."""
-    # Here's an example output of `mpremote devs`:
-    # /dev/cu.Bluetooth-Incoming-Port None 0000:0000 None None
-    # /dev/cu.usbmodem101 e6614864d35f9934 2e8a:0005 MicroPython Board in FS mode
-    # /dev/cu.usbmodem112201 e6614864d3417f36 2e8a:0005 MicroPython Board in FS mode
-
-    output = subprocess.run(["mpremote", "devs"], stdout=subprocess.PIPE).stdout.decode(
-        "utf-8"
-    )
-    lines = output.splitlines()
-    ids = []
-    for line in lines:
-        if "Bluetooth" not in line:
-            ids.append(line.split()[1])
+    ids = get_all_board_ids()
 
     for board_id in ids:
-        provision(c, board_id)
+        provision(c, board_id, initial=initial)
 
 
 @task
-def provision(c: Context, board_id: str) -> None:
+def provision(c: Context, board_id: str, *, initial: bool = True) -> None:
     """Install dependencies and copy project files to the board."""
     prepare(board_id)
     download_image(c, board_id)
-    wipe(c, board_id)
-    with c.cd(SRC_DIR):
-        if MICROPYTHON_DEPENDENCIES:
-            deps = " ".join(MICROPYTHON_DEPENDENCIES)
-            c.run(
-                f"mpremote connect id:{board_id} " f"mip install {deps}",
-                pty=True,
-                echo=True,
-            )
+    if initial:
+        wipe(c, board_id)
+        with c.cd(SRC_DIR):
+            if MICROPYTHON_DEPENDENCIES:
+                deps = " ".join(MICROPYTHON_DEPENDENCIES)
+                c.run(
+                    f"mpremote connect id:{board_id} " f"mip install {deps}",
+                    pty=True,
+                    echo=True,
+                )
     update_code(c, board_id)
 
 
@@ -144,6 +133,22 @@ def prepare(board_id: str) -> None:
 
     with (SRC_DIR / "secrets.py").open("w") as f:
         f.write(ast.unparse(secrets))
+
+
+def get_all_board_ids():
+    # Here's an example output of `mpremote devs`:
+    # /dev/cu.Bluetooth-Incoming-Port None 0000:0000 None None
+    # /dev/cu.usbmodem101 e6614864d35f9934 2e8a:0005 MicroPython Board in FS mode
+    # /dev/cu.usbmodem112201 e6614864d3417f36 2e8a:0005 MicroPython Board in FS mode
+    output = subprocess.run(["mpremote", "devs"], stdout=subprocess.PIPE).stdout.decode(
+        "utf-8"
+    )
+    lines = output.splitlines()
+    ids = []
+    for line in lines:
+        if "Bluetooth" not in line:
+            ids.append(line.split()[1])
+    return ids
 
 
 def get_provisioning(board_id: str) -> dict[str, str]:
