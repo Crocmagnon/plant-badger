@@ -128,6 +128,7 @@ class HAPlant:
         self.details["illuminance"] = fetch_state(secrets.HA_PLANT_ILLUMINANCE_SENSOR)
         self.details["temperature"] = fetch_state(secrets.HA_PLANT_TEMPERATURE_SENSOR)
         self.details["conductivity"] = fetch_state(secrets.HA_PLANT_CONDUCTIVITY_SENSOR)
+        self.details["dli"] = fetch_state(secrets.HA_PLANT_DLI_SENSOR)
         print(self.details)
 
     def display_state(self):
@@ -140,20 +141,72 @@ class HAPlant:
         display_header(self.get_plant_attribute("friendly_name"))
 
         # Display status
+        y_offset = 28
+        lines_spacing = 20
+        lines = [
+            ("H", "moisture"),
+            ("T", "temperature"),
+            ("C", "conductivity"),
+            ("L", "illuminance"),
+            ("D", "dli"),
+        ]
+        for line in lines:
+            self.bar(line[0], line[1], y_offset)
+            y_offset += lines_spacing
+
         display.set_pen(BLACK)
-        display.text("H", LINE_START_OFFSET, 30)
-        display.text("T", LINE_START_OFFSET, 55)
-        display.text("C", LINE_START_OFFSET, 80)
-        display.text("L", LINE_START_OFFSET, 105)
-
-        display.set_font("bitmap8")
-        display.text(self.get_plant_status("moisture"), STATUS_VALUE_OFFSET, 30)
-        display.text(self.get_plant_status("temperature"), STATUS_VALUE_OFFSET, 55)
-        display.text(self.get_plant_status("conductivity"), STATUS_VALUE_OFFSET, 80)
-        display.text(self.get_plant_status("illuminance"), STATUS_VALUE_OFFSET, 105)
-
         display.set_update_speed(UPDATE_MEDIUM)
         display.update()
+
+    def bar(self, label: str, attribute: str, y_offset: int) -> None:
+        print(f"Displaying {attribute} bar")
+
+        display.set_pen(BLACK)
+        display.set_font("bitmap6")
+        display.text(label, LINE_START_OFFSET, y_offset)
+
+        width = WIDTH - STATUS_VALUE_OFFSET - 5
+        gauge_border = 1
+        height = 10
+
+        external_x = STATUS_VALUE_OFFSET
+        external_y = y_offset + 2
+        external_width = width
+        external_height = height
+
+        internal_x = external_x + gauge_border
+        internal_y = external_y + gauge_border
+        internal_width = external_width - gauge_border * 2
+        internal_height = external_height - gauge_border * 2
+
+        # Display contour
+        display.set_pen(BLACK)
+        display.rectangle(external_x, external_y, external_width, external_height)
+        display.set_pen(WHITE)
+        display.rectangle(internal_x, internal_y, internal_width, internal_height)
+
+        # Fill bar
+        state = self.get_detailed_state(attribute)
+        value = float(state)
+        min_value = getattr(secrets, "HA_PLANT_MIN_" + attribute.upper(), -1)
+        max_value = getattr(secrets, "HA_PLANT_MAX_" + attribute.upper(), -1)
+
+        if min_value == -1 or max_value == -1:
+            return
+        elif max_value < min_value:
+            min_value, max_value = max_value, min_value
+        elif min_value == max_value:
+            max_value = min_value + 100
+
+        if value < min_value:
+            value = min_value
+        elif value > max_value:
+            value = max_value
+
+        percentage = (value - min_value) / (max_value - min_value)
+        bar_width = int(internal_width * percentage)
+        display.set_pen(BLACK)
+        display.rectangle(internal_x, internal_y, bar_width, internal_height)
 
 
 def main():
