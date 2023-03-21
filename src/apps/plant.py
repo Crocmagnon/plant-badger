@@ -102,7 +102,8 @@ class HAPlant:
         return (
             self.details.get(attribute, {})
             .get("attributes", {})
-            .get(attribute_name, None)
+            .get(attribute_name, "")
+            .replace("µ", "u")
         )
 
     def get_plant_status(self, attribute):
