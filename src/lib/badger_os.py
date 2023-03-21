@@ -137,8 +137,10 @@ def launch(file):
     except Exception as e:
         # If the app throws an error, catch it and display!
         print(e)
-        warning(None, str(e))
-        time.sleep(4.0)
+        state_clear_running()
+        display = badger2040.Badger2040W()
+        warning(display, str(e))
+        display.halt()
 
     # If the app exits or errors, do not relaunch!
     state_clear_running()
