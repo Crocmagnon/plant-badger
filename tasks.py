@@ -52,18 +52,10 @@ def provision(c: Context, board_id: str, *, initial: bool = True) -> None:
 @task
 def download_image(c: Context, board_id: str) -> None:
     """Download and prepare the proper plant picture for the board."""
-    import requests
-    import sys
-
-    sys.path.insert(0, str(SRC_DIR))
-    from secrets import HA_ACCESS_TOKEN, HA_BASE_URL
-
     provisioning = get_provisioning(board_id)
+    plant_id = provisioning["HA_PLANT_ID"]
 
-    url = HA_BASE_URL + "/states/" + provisioning["HA_PLANT_ID"]
-    headers = {"Authorization": "Bearer " + HA_ACCESS_TOKEN}
-    res = requests.get(url, headers=headers)
-    data = res.json()
+    data = query_ha_state(plant_id)
     image_url = data["attributes"]["entity_picture"]
     image_path = SRC_DIR / "images" / "plant.jpg"
     c.run(f"curl -o {image_path} {image_url}", pty=True, echo=True)
@@ -82,6 +74,20 @@ def download_image(c: Context, board_id: str) -> None:
     # convert image to grayscale
     image = image.convert("L")
     image.save(image_path)
+
+
+def query_ha_state(entity_id):
+    import requests
+    import sys
+
+    sys.path.insert(0, str(SRC_DIR))
+    from secrets import HA_ACCESS_TOKEN, HA_BASE_URL
+
+    url = HA_BASE_URL + "/states/" + entity_id
+    headers = {"Authorization": "Bearer " + HA_ACCESS_TOKEN}
+    res = requests.get(url, headers=headers)
+    data = res.json()
+    return data
 
 
 @task
@@ -130,6 +136,10 @@ def prepare(board_id: str) -> None:
                 var_name = target.id
                 if var_name in provisioning:
                     node.value = ast.Constant(provisioning[var_name])
+                elif var_name.lower() in provisioning:
+                    state = query_ha_state(provisioning[var_name.lower()])
+                    value = int(state.get("state", -1))
+                    node.value = ast.Constant(value)
 
     with (SRC_DIR / "secrets.py").open("w") as f:
         f.write(ast.unparse(secrets))

@@ -10,6 +10,15 @@ e6614864d35f9934:
   HA_PLANT_TEMPERATURE_SENSOR: sensor.hedera_helix_temperature
   HA_PLANT_CONDUCTIVITY_SENSOR: sensor.hedera_helix_conductivity
   HA_PLANT_ILLUMINANCE_SENSOR: sensor.hedera_helix_illuminance
+
+  ha_plant_max_moisture: number.hedera_helix_max_soil_moisture
+  ha_plant_min_moisture: number.hedera_helix_min_soil_moisture
+  ha_plant_max_temperature: number.hedera_helix_max_temperature
+  ha_plant_min_temperature: number.hedera_helix_min_temperature
+  ha_plant_max_illuminance: number.hedera_helix_max_illuminance
+  ha_plant_min_illuminance: number.hedera_helix_min_illuminance
+  ha_plant_max_conductivity: number.hedera_helix_max_conductivity
+  ha_plant_min_conductivity: number.hedera_helix_min_conductivity
 e6614864d3417f36:
   HA_PLANT_ID: plant.calathea_makoyana
   HA_PLANT_MOISTURE_SENSOR: sensor.calathea_makoyana_soil_moisture
