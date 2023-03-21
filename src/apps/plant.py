@@ -2,20 +2,20 @@ import urequests
 import jpegdec
 from pcf85063a import PCF85063A
 
-from badger2040w import (
+from badger2040 import (
     WIDTH,
-    Badger2040W,
     UPDATE_NORMAL,
     UPDATE_MEDIUM,
     UPDATE_FAST,
 )
+from badger_with_clock import Badger2040
 from badger_os import get_battery_level
 
 import secrets
 from secrets import HA_BASE_URL, HA_ACCESS_TOKEN
 
 
-display = Badger2040W()
+display = Badger2040()
 display.led(128)
 
 jpeg = jpegdec.JPEG(display.display)

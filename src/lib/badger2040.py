@@ -1,9 +1,6 @@
 import machine
 import micropython
 from picographics import PicoGraphics, DISPLAY_INKY_PACK
-from pimoroni_i2c import PimoroniI2C
-from pcf85063a import PCF85063A
-import ntptime
 import network
 from network_manager import NetworkManager
 import WIFI_CONFIG
@@ -53,6 +50,10 @@ BUTTONS = {
 WAKEUP_MASK = 0
 
 
+def is_wireless():
+    return True
+
+
 def woken_by_button():
     return wakeup.get_gpio_state() & BUTTON_MASK > 0
 
@@ -79,15 +80,13 @@ def system_speed(speed):
         pass
 
 
-class Badger2040W:
+class Badger2040:
     def __init__(self):
         self.display = PicoGraphics(DISPLAY_INKY_PACK)
         self._led = machine.PWM(machine.Pin(LED))
         self._led.freq(1000)
         self._led.duty_u16(0)
         self._update_speed = 0
-        i2c = PimoroniI2C(sda=4, scl=5)
-        self.rtc = PCF85063A(i2c)
 
     def __getattr__(self, item):
         # Glue to redirect calls to PicoGraphics
@@ -121,7 +120,7 @@ class Badger2040W:
         time.sleep(0.05)
         enable = machine.Pin(ENABLE_3V3, machine.Pin.OUT)
         enable.off()
-        while not self.pressed_any() and not self.rtc.read_timer_flag():
+        while not self.pressed_any():
             pass
 
     def pressed(self, button):
@@ -154,8 +153,16 @@ class Badger2040W:
                 row >>= 1
 
     def status_handler(self, mode, status, ip):
-        # Explicitly do not display anything when connecting to Wi-Fi.
-        pass
+        print(mode, status, ip)
+        self.display.set_pen(15)
+        self.display.clear()
+        self.display.set_pen(0)
+        if status:
+            self.display.text("Connected!", 10, 10, 300, 0.5)
+            self.display.text(ip, 10, 30, 300, 0.5)
+        else:
+            self.display.text("Connecting...", 10, 10, 300, 0.5)
+        self.update()
 
     def isconnected(self):
         return network.WLAN(network.STA_IF).isconnected()
@@ -174,8 +181,3 @@ class Badger2040W:
             network_manager.client(WIFI_CONFIG.SSID, WIFI_CONFIG.PSK)
         )
         gc.collect()
-
-    def set_clocks(self):
-        ntptime.settime()
-        now = time.localtime()
-        self.rtc.datetime(now[:7])
