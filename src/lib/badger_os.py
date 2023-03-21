@@ -9,7 +9,6 @@ import badger2040w as badger2040
 
 
 def get_battery_level():
-    return 0
     # Battery measurement
     vbat_adc = machine.ADC(badger2040.PIN_BATTERY)
     vref_adc = machine.ADC(badger2040.PIN_1V2_REF)
