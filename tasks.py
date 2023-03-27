@@ -131,6 +131,12 @@ def update_code(c: Context, board_id: str) -> None:
     with c.cd(SRC_DIR):
         c.run("find . -name '.DS_Store' -delete", pty=True, echo=True)
         c.run(
+            "find . -name '.pytest_cache' -type d -exec rm -r {} +", pty=True, echo=True
+        )
+        c.run(
+            "find . -name '__pycache__' -type d -exec rm -r {} +", pty=True, echo=True
+        )
+        c.run(
             f"mpremote connect id:{board_id} cp -r . : + reset",
             pty=True,
             echo=True,
