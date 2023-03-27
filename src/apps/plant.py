@@ -12,6 +12,7 @@ from badger_with_clock import Badger2040
 from badger_os import get_battery_level
 
 import secrets
+from dst import fix_dst
 from secrets import HA_BASE_URL, HA_ACCESS_TOKEN
 
 
@@ -251,8 +252,7 @@ def display_header(text):
     display.text(text, 3, 4)
 
     # Display time
-    _, _, _, hour, minute, _, _ = display.rtc.datetime()
-    hour = (hour + 1) % 24
+    hour, minute = get_time()
     time = f"{hour:02d}:{minute:02d}"
     time_offset = display.measure_text(time) + 3
     display.text(time, WIDTH - time_offset, 4)
@@ -262,6 +262,10 @@ def display_header(text):
     battery = f"{battery_level}%"
     battery_offset = display.measure_text(battery) + 15
     display.text(battery, WIDTH - time_offset - battery_offset, 4)
+
+
+def get_time():
+    return fix_dst(*display.rtc.datetime())
 
 
 main()

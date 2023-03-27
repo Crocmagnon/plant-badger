@@ -5,3 +5,4 @@ pre-commit
 requests
 Pillow
 pyyaml
+pytest

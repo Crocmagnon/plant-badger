@@ -1,4 +1,5 @@
 import ast
+import os
 import subprocess
 import time
 from pathlib import Path
@@ -9,11 +10,25 @@ from invoke import task, Context
 
 BASE_DIR = Path(__file__).parent.resolve(strict=True)
 SRC_DIR = BASE_DIR / "src"
+TESTS_DIR = BASE_DIR / "test"
 
 MICROPYTHON_DEPENDENCIES = [
     # "github:miguelgrinberg/microdot/src/microdot.py",
     # "github:miguelgrinberg/microdot/src/microdot_asyncio.py",
 ]
+
+
+@task
+def test(c: Context) -> None:
+    """Run tests."""
+    with c.cd(BASE_DIR):
+        path = os.getenv("PYTHONPATH", "")
+        c.run(
+            "pytest",
+            pty=True,
+            echo=True,
+            env={"PYTHONPATH": f"{SRC_DIR}:{path}"},
+        )
 
 
 @task(name="list")
