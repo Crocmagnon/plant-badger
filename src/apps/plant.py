@@ -100,30 +100,6 @@ class HAPlant:
     def get_detailed_state(self, attribute):
         return self.details.get(attribute, {}).get("state", None)
 
-    def get_detailed_attribute(self, attribute, attribute_name):
-        return (
-            self.details.get(attribute, {})
-            .get("attributes", {})
-            .get(attribute_name, "")
-            .replace("µ", "u")
-        )
-
-    def get_plant_status(self, attribute):
-        status = self.get_plant_attribute(f"{attribute}_status")
-        if status is None:
-            return "N/A"
-        status = status.upper()
-        if status == "OK":
-            return "OK"
-        detailed_state = self.get_detailed_state(
-            attribute
-        ) + self.get_detailed_attribute(attribute, "unit_of_measurement")
-        if status == "LOW":
-            return f"Bas ({detailed_state})"
-        if status == "HIGH":
-            return f"Haut ({detailed_state})"
-        return status
-
     def fetch_states(self) -> None:
         self.plant_state = fetch_state(secrets.HA_PLANT_ID)
         self.details["moisture"] = fetch_state(secrets.HA_PLANT_MOISTURE_SENSOR)
