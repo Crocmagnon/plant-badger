@@ -181,15 +181,13 @@ class HAPlant:
         internal_width = external_width - gauge_border * 2
         internal_height = external_height - gauge_border * 2
 
-        # Display contour
-        display.set_pen(BLACK)
-        display.rectangle(external_x, external_y, external_width, external_height)
-        display.set_pen(WHITE)
-        display.rectangle(internal_x, internal_y, internal_width, internal_height)
-
-        # Fill bar
+        # Prepare value & thresholds
         state = self.get_detailed_state(attribute)
-        value = float(state)
+        try:
+            value = float(state)
+        except ValueError:
+            return
+
         min_value = getattr(secrets, "HA_PLANT_MIN_" + attribute.upper(), -1)
         max_value = getattr(secrets, "HA_PLANT_MAX_" + attribute.upper(), -1)
 
@@ -205,6 +203,13 @@ class HAPlant:
         elif value > max_value:
             value = max_value
 
+        # Display contour
+        display.set_pen(BLACK)
+        display.rectangle(external_x, external_y, external_width, external_height)
+        display.set_pen(WHITE)
+        display.rectangle(internal_x, internal_y, internal_width, internal_height)
+
+        # Fill bar
         percentage = (value - min_value) / (max_value - min_value)
         bar_width = int(internal_width * percentage)
         display.set_pen(BLACK)
