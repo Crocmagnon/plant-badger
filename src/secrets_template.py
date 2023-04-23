@@ -14,3 +14,4 @@ HA_PLANT_CONDUCTIVITY_SENSOR = "sensor.plant_name_conductivity"
 HA_PLANT_ILLUMINANCE_SENSOR = "sensor.plant_name_illuminance"
 
 REFRESH_INTERVAL_MINUTES = 60  # Max 255
+ERROR_REFRESH_INTERVAL_MINUTES = 30

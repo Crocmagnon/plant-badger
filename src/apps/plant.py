@@ -9,7 +9,7 @@ from badger2040 import (
     UPDATE_FAST,
 )
 from badger_with_clock import Badger2040
-from badger_os import get_battery_level
+from badger_os import get_battery_level, warning
 
 import secrets
 from dst import fix_dst
@@ -201,10 +201,7 @@ def main():
     while True:
         display.rtc.clear_timer_flag()
         fetch_and_display()
-        display.rtc.set_timer(
-            secrets.REFRESH_INTERVAL_MINUTES, ttp=PCF85063A.TIMER_TICK_1_OVER_60HZ
-        )
-        display.rtc.enable_timer_interrupt(True)
+        display.set_timer_minutes_with_jitter(secrets.REFRESH_INTERVAL_MINUTES)
         print("Halting")
         display.halt()
 
@@ -249,4 +246,11 @@ def get_time():
     return fix_dst(*display.rtc.datetime())
 
 
-main()
+while True:
+    try:
+        main()
+    except Exception as e:
+        print(e)
+        warning(display, str(e))
+        display.set_timer_minutes_with_jitter(secrets.ERROR_REFRESH_INTERVAL_MINUTES)
+        display.halt()
