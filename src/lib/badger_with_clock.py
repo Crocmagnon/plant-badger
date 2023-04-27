@@ -33,14 +33,14 @@ class Badger2040(badger2040.Badger2040):
         self.rtc.enable_timer_interrupt(True)
 
     def set_timer_minutes_with_jitter(
-        self, minutes: int, jitter_percentage: float = 0.2
+        self, minutes: int, jitter_percentage: float = 0.1
     ):
         """
         Wake the board in X minutes with some jitter. Doesn't halt the board.
         jitter_percentage should be a float between 0.0 and 1.0.
         """
         delta = int(minutes * abs(jitter_percentage))
-        minutes += random.randint(-delta, delta)
+        minutes += random.randint(0, delta)
         self.set_timer_minutes(minutes)
 
     def status_handler(self, mode, status, ip):
