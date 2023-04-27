@@ -42,3 +42,7 @@ class Badger2040(badger2040.Badger2040):
         delta = int(minutes * abs(jitter_percentage))
         minutes += random.randint(-delta, delta)
         self.set_timer_minutes(minutes)
+
+    def status_handler(self, mode, status, ip):
+        # Explicitly doing nothing here, to prevent display blinking.
+        pass
