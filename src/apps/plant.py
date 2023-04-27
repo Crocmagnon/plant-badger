@@ -1,6 +1,5 @@
 import urequests
 import jpegdec
-from pcf85063a import PCF85063A
 
 from badger2040 import (
     WIDTH,
@@ -246,8 +245,18 @@ def get_time():
     return fix_dst(*display.rtc.datetime())
 
 
+def splash_screen():
+    display.set_pen(WHITE)
+    display.clear()
+    display.set_pen(BLACK)
+    display.text("Starting plant app...", 10, 10, 300, 0.5)
+    display.set_update_speed(UPDATE_FAST)
+    display.update()
+
+
 while True:
     try:
+        splash_screen()
         main()
     except Exception as e:
         print(e)
