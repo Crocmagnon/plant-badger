@@ -254,9 +254,9 @@ def splash_screen():
     display.update()
 
 
+splash_screen()
 while True:
     try:
-        splash_screen()
         main()
     except Exception as e:
         print(e)
