@@ -94,20 +94,20 @@ e6614864d3269c34:
   ha_plant_min_dli: number.aloe_vera_min_dli
 
 e6614864d3938334:
-  HA_PLANT_ID: plant.senecio_himalaya
-  HA_PLANT_MOISTURE_SENSOR: sensor.senecio_himalaya_soil_moisture
-  HA_PLANT_TEMPERATURE_SENSOR: sensor.senecio_himalaya_temperature
-  HA_PLANT_CONDUCTIVITY_SENSOR: sensor.senecio_himalaya_conductivity
-  HA_PLANT_ILLUMINANCE_SENSOR: sensor.senecio_himalaya_illuminance
-  HA_PLANT_DLI_SENSOR: sensor.senecio_himalaya_dli
+  HA_PLANT_ID: plant.chlorophytum_comosum
+  HA_PLANT_MOISTURE_SENSOR: sensor.chlorophytum_comosum_soil_moisture
+  HA_PLANT_TEMPERATURE_SENSOR: sensor.chlorophytum_comosum_temperature
+  HA_PLANT_CONDUCTIVITY_SENSOR: sensor.chlorophytum_comosum_conductivity
+  HA_PLANT_ILLUMINANCE_SENSOR: sensor.chlorophytum_comosum_illuminance
+  HA_PLANT_DLI_SENSOR: sensor.chlorophytum_comosum_dli
 
-  ha_plant_max_moisture: number.senecio_himalaya_max_soil_moisture
-  ha_plant_min_moisture: number.senecio_himalaya_min_soil_moisture
-  ha_plant_max_temperature: number.senecio_himalaya_max_temperature
-  ha_plant_min_temperature: number.senecio_himalaya_min_temperature
-  ha_plant_max_illuminance: number.senecio_himalaya_max_illuminance
-  ha_plant_min_illuminance: number.senecio_himalaya_min_illuminance
-  ha_plant_max_conductivity: number.senecio_himalaya_max_conductivity
-  ha_plant_min_conductivity: number.senecio_himalaya_min_conductivity
-  ha_plant_max_dli: number.senecio_himalaya_max_dli
-  ha_plant_min_dli: number.senecio_himalaya_min_dli
+  ha_plant_max_moisture: number.chlorophytum_comosum_max_soil_moisture
+  ha_plant_min_moisture: number.chlorophytum_comosum_min_soil_moisture
+  ha_plant_max_temperature: number.chlorophytum_comosum_max_temperature
+  ha_plant_min_temperature: number.chlorophytum_comosum_min_temperature
+  ha_plant_max_illuminance: number.chlorophytum_comosum_max_illuminance
+  ha_plant_min_illuminance: number.chlorophytum_comosum_min_illuminance
+  ha_plant_max_conductivity: number.chlorophytum_comosum_max_conductivity
+  ha_plant_min_conductivity: number.chlorophytum_comosum_min_conductivity
+  ha_plant_max_dli: number.chlorophytum_comosum_max_dli
+  ha_plant_min_dli: number.chlorophytum_comosum_min_dli

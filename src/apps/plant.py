@@ -1,5 +1,6 @@
 import urequests
 import jpegdec
+import sys
 
 from badger2040 import (
     WIDTH,
@@ -224,9 +225,13 @@ def display_header(text):
     display.rectangle(0, 0, WIDTH, 20)
 
     # Write text in header
+    if len(text) > 15:
+        text = text.split(" ")[0]
+        if len(text) > 15:
+            text = text[:14] + "."
     display.set_font("bitmap6")
     display.set_pen(WHITE)
-    display.text(text, 3, 4)
+    display.text(text[:16], 3, 4)
 
     # Display time
     hour, minute = get_time()
@@ -249,7 +254,7 @@ while True:
     try:
         main()
     except Exception as e:
-        print(e)
+        sys.print_exception(e)
         warning(display, str(e))
         display.set_timer_minutes_with_jitter(secrets.ERROR_REFRESH_INTERVAL_MINUTES)
         display.halt()
